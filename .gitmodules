@@ -10,3 +10,6 @@
 [submodule "lib/flywheel-v2"]
 	path = lib/flywheel-v2
 	url = https://github.com/fei-protocol/flywheel-v2
+[submodule "lib/ERC4626"]
+	path = lib/ERC4626
+	url = https://github.com/fei-protocol/ERC4626
