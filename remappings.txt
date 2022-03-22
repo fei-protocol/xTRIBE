@@ -1,3 +1,5 @@
 ds-test/=lib/ds-test/src/
 solmate/=lib/solmate/src/
 forge-std/=lib/forge-std/src/
+ERC4626/=lib/ERC4626/src/
+flywheel/=lib/flywheel-v2/src/
