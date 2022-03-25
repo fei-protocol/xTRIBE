@@ -6,6 +6,7 @@ pragma solidity ^0.8.0;
 import {ERC20} from "solmate/tokens/ERC20.sol";
 import {Auth, Authority} from "solmate/auth/Auth.sol";
 
+import {Multicall} from "ERC4626/external/Multicall.sol";
 import {xERC4626, ERC4626} from "ERC4626/xERC4626.sol";
 import {ERC20MultiVotes} from "flywheel/token/ERC20MultiVotes.sol";
 import {ERC20Gauges} from "flywheel/token/ERC20Gauges.sol";
@@ -26,18 +27,19 @@ interface ITribe {
          * allows on-chain voting with both xTRIBE and TRIBE voting power.
          * includes gauges for reward direction
     
-    The xTRIBE owner/authority ONLY control the maximum number and constituence of gauges.
+    The xTRIBE owner/authority ONLY control the maximum number and approved overrides of gauges and delegates, as well as the live gauge list.
  */
-contract xTRIBE is ERC20MultiVotes, ERC20Gauges, xERC4626 {
+contract xTRIBE is ERC20MultiVotes, ERC20Gauges, xERC4626, Multicall {
     constructor(
         ERC20 _tribe,
         address _owner,
         Authority _authority,
-        uint32 _rewardsCycleLength
+        uint32 _rewardsCycleLength,
+        uint32 _incrementFreezeWindow
     )
         Auth(_owner, _authority)
         xERC4626(_rewardsCycleLength)
-        ERC20Gauges(_rewardsCycleLength)
+        ERC20Gauges(_rewardsCycleLength, _incrementFreezeWindow)
         ERC4626(_tribe, "xTribe: Gov + Yield", "xTRIBE")
     {}
 
