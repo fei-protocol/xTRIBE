@@ -142,7 +142,7 @@ contract xTRIBETest is DSTestPlus {
             for (uint256 i = 0; i < 20; i++) {
                 hevm.assume(
                     gauges[i] != address(0) && // no zero gauge
-                        !xTribe.isGaugeLive(gauges[i]) && // no same gauge twice
+                        !xTribe.isGauge(gauges[i]) && // no same gauge twice
                         gaugeTotalSupply[i] != 0 // no zero supply
                 );
                 userGaugeBalance[i] = uint104(
@@ -173,7 +173,7 @@ contract xTRIBETest is DSTestPlus {
             hevm.prank(user);
             xTribe.incrementGauges(gaugeList, amounts);
         }
-        hevm.warp(xTribe.getCurrentCycle());
+        hevm.warp(xTribe.getGaugeCycleEnd());
 
         // set the rewards and queue for the rewards cycle
         rewardToken.mint(address(stream), quantity);
@@ -228,7 +228,7 @@ contract xTRIBETest is DSTestPlus {
             uint256 gaugeWeightBefore = xTribe.getGaugeWeight(gauge);
             uint256 totalWeightBefore = xTribe.totalWeight();
 
-            uint32 cycleEnd = xTribe.getCurrentCycle();
+            uint32 cycleEnd = xTribe.getGaugeCycleEnd();
 
             hevm.startPrank(user);
             // Test the two major cases of successfull increment and failed increment
