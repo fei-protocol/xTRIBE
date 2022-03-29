@@ -90,7 +90,7 @@ contract xTRIBE is ERC20MultiVotes, ERC20Gauges, xERC4626, Multicall {
         uint256 size = accounts.length;
 
         for (uint256 i = 0; i < accounts.length; ) {
-            emit DelegateVotesChanged(accounts[i], 0, getVotes(account[i]));
+            emit DelegateVotesChanged(accounts[i], 0, getVotes(accounts[i]));
 
             unchecked {
                 i++;
