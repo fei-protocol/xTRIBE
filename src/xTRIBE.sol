@@ -63,7 +63,7 @@ contract xTRIBE is ERC20MultiVotes, ERC20Gauges, xERC4626, Multicall {
     }
 
     /**
-    @notice calculate past voting power at a given block of xTRIBE AND underlying TRIBE voting power for user, converted to xTRIBE shares.
+     @notice calculate past voting power at a given block of xTRIBE AND underlying TRIBE voting power for user, converted to xTRIBE shares.
      @param account the user to calculate voting power of.
      @param blockNumber the block in the past to get voting power from.
      @return the voting power of `account` at block `blockNumber`.
@@ -79,6 +79,23 @@ contract xTRIBE is ERC20MultiVotes, ERC20Gauges, xERC4626, Multicall {
         return
             super.getPastVotes(account, blockNumber) +
             convertToShares(tribe().getPriorVotes(account, blockNumber));
+    }
+
+    /**
+     @notice an event for manually emitting voting balances.
+
+     This is important because this contract cannot be synchronously notified of Tribe delegations.
+     */
+    function emitVotingBalances(address[] calldata accounts) external view {
+        uint256 size = accounts.length;
+
+        for (uint256 i = 0; i < accounts.length; ) {
+            emit DelegateVotesChanged(accounts[i], 0, getVotes(account[i]));
+
+            unchecked {
+                i++;
+            }
+        }
     }
 
     /*///////////////////////////////////////////////////////////////
