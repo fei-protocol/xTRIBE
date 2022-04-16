@@ -86,7 +86,10 @@ contract xTRIBE is ERC20MultiVotes, ERC20Gauges, xERC4626, Multicall {
 
      This is important because this contract cannot be synchronously notified of Tribe delegations.
      */
-    function emitVotingBalances(address[] calldata accounts) external {
+    function emitVotingBalances(address[] calldata accounts)
+        external
+        requiresAuth
+    {
         uint256 size = accounts.length;
 
         for (uint256 i = 0; i < size; ) {
