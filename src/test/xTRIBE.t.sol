@@ -73,7 +73,12 @@ contract xTRIBETest is DSTestPlus {
         uint128 transferAmount
     ) public {
         // setup
-        hevm.assume(mintAmount != 0 && transferAmount <= mintAmount);
+        hevm.assume(
+            mintAmount != 0 &&
+                transferAmount <= mintAmount &&
+                user != address(0) &&
+                delegate != address(0)
+        );
         rewardToken.mint(user, mintAmount);
         xTribe.setMaxDelegates(1);
 
@@ -87,12 +92,12 @@ contract xTRIBETest is DSTestPlus {
         // expect revert and early return if user tries to delegate more than they have
         if (delegationAmount > mintAmount) {
             hevm.expectRevert(abi.encodeWithSignature("DelegationError()"));
-            xTribe.delegate(delegate, delegationAmount);
+            xTribe.incrementDelegation(delegate, delegationAmount);
             return;
         }
 
         // user can successfully delegate
-        xTribe.delegate(delegate, delegationAmount);
+        xTribe.incrementDelegation(delegate, delegationAmount);
         require(xTribe.userDelegatedVotes(user) == delegationAmount);
         require(xTribe.numCheckpoints(delegate) == 1);
         require(xTribe.checkpoints(delegate, 0).votes == delegationAmount);
@@ -218,6 +223,9 @@ contract xTRIBETest is DSTestPlus {
     ) public {
         xTribe.setMaxGauges(20);
         for (uint256 i = 0; i < 20; i++) {
+            hevm.assume(
+                !(xTribe.isGauge(gauges[i]) || gauges[i] == address(0))
+            );
             uint32 warp = warps[i] % xTribe.gaugeCycleLength();
             address user = users[i];
             address gauge = gauges[i];
